@@ -77,36 +77,32 @@
         }
 
         function displayBookInfo(bookId) {
-            try {
-                books.doc(bookId).get().then(book => {
-                    if (book.exists) {
-                        list.hidden && list.removeAttribute('hidden');
+            books.doc(bookId).get().then(book => {
+                if (book.exists) {
+                    list.hidden && list.removeAttribute('hidden');
 
-                        const bookInfo = book.data();
-                        bookInfoList.forEach(li => {
-                            const span = li.querySelector('span');
-                            span.textContent = bookInfo[span.className];
-                        });
-                    }
-                })
-            } catch (error) {
+                    const bookInfo = book.data();
+                    bookInfoList.forEach(li => {
+                        const span = li.querySelector('span');
+                        span.textContent = bookInfo[span.className];
+                    });
+                }
+            }).catch(error => {
                 console.log("Error getting document:", error);
-            }
+            })
         }
 
         function submit(event) {
             event.preventDefault();
 
-            try {
-                books.add(createDbEntry()).then(ref => {
-                    displayBookInfo(ref.id);
-                    formInputs.forEach(input => input.value = '')
+            books.add(createDbEntry()).then(ref => {
+                displayBookInfo(ref.id);
+                formInputs.forEach(input => input.value = '')
 
-                    console.log("Document written with ID: ", docRef);
-                })
-            } catch (error) {
+                console.log("Document written with ID: ", docRef);
+            }).catch(error => {
                 console.error('Error adding document: ', error);
-            }
+            })
         }
 
         submitBtn.addEventListener('click', submit);
