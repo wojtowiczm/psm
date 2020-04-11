@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My book</title>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-firestore.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyBr_-wbKITfjTkLdiqX6s75-g_AuAEiFmU",
+            authDomain: "psm04-61251.firebaseapp.com",
+            databaseURL: "https://psm04-61251.firebaseio.com",
+            projectId: "psm04-61251",
+            storageBucket: "psm04-61251.appspot.com",
+            messagingSenderId: "55350884281",
+            appId: "1:55350884281:web:c7dbd8f1cbe2e2b1cea868"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+    </script>
+</head>
+
+<body>
+    <div>
+        <ul>
+        </ul>
+    </div>
+
+    <script>
+        const db = firebase.firestore();
+        const list = document.querySelector('ul');
+
+        function createListElement(label, value) {
+            const li = document.createElement('li');
+            li.textContent = `${label}: ${value}`;
+            return li;
+        }
+
+        function getBooks() {
+            db.collection('books').get().then((collection) => {
+                collection.forEach((book) => {
+                    const bookData = book.data();
+                    const bookInfo = [
+                        createListElement('Tytuł', bookData.title),
+                        createListElement('Autor', bookData.author),
+                        createListElement('Rok publikacji', bookData.publishYear),
+                        createListElement('Gatunek', bookData.type),
+                        createListElement('ISBN', bookData.ISBN)
+                    ];
+
+                    bookInfo.forEach(info => list.append(info));
+                });
+            });
+        }
+
+        getBooks();
+    </script>
+</body>
+
+</html>
