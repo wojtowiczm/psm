@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Save</title>
+
+    <script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-firestore.js"></script>
+
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyBr_-wbKITfjTkLdiqX6s75-g_AuAEiFmU",
+            authDomain: "psm04-61251.firebaseapp.com",
+            databaseURL: "https://psm04-61251.firebaseio.com",
+            projectId: "psm04-61251",
+            storageBucket: "psm04-61251.appspot.com",
+            messagingSenderId: "55350884281",
+            appId: "1:55350884281:web:c7dbd8f1cbe2e2b1cea868"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+    </script>
+  </head>
+  <body>
+    <form>
+      <div>
+        <input id="file" type="file" accept="application/JSON" required>
+      </div>
+      <div>
+        <input type="submit" value="Zapisz"/>
+      </div>
+    </form>
+
+    <script>
+      const db = firebase.firestore();
+      const books = db.collection('books');
+      const fileInput = document.querySelector('#file'); 
+      const submitBtn = document.querySelector('input[type="submit"]');
+      
+      function handleReaderLoad(event) {
+        const fileData = JSON.parse(event.target.result);
+        const batch = db.batch();
+
+        fileData.forEach(doc => {
+          const docId = books.doc();
+          batch.set(docId, doc)
+        });
+        
+        batch.commit();
+      }
+
+      function saveToDb() {
+        const reader = new FileReader();
+        reader.onload = handleReaderLoad;
+        reader.readAsText(fileInput.files[0]);
+      }
+
+      function submit(event) {
+        event.preventDefault();
+
+        try {
+          saveToDb();
+          console.log('Document saved');
+
+        } catch(error) {
+          console.error('Error adding document: ', error);
+        }
+      }
+
+      submitBtn.addEventListener('click', submit);
+    </script>
+  </body>
+</html>
